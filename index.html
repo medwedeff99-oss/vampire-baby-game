@@ -206,6 +206,46 @@ window.addEventListener('error', function(e){
   const response = await fetch('game.js?v=4', {cache:'no-store'});
   let source = await response.text();
 
+  // Give every level its own soundtrack. If a later MP3 has not been uploaded yet,
+  // the game safely falls back to the original Level 1 theme instead of breaking.
+  source = source.replace(
+    "const backgroundMusic = new Audio('assets/audio/Midnight_Monster_Trot.mp3');",
+    `const MUSIC_TRACKS = [
+      'assets/audio/Midnight_Monster_Trot.mp3',
+      'assets/audio/Paint_Splash_Boogie.mp3',
+      'assets/audio/Moonberry_Library_Shuffle.mp3',
+      'assets/audio/Monster_Lunch_Rock.mp3',
+      'assets/audio/Vampire_Baby_Portal_Party.mp3'
+    ];
+    const backgroundMusic = new Audio(MUSIC_TRACKS[0]);
+    backgroundMusic.dataset.track = MUSIC_TRACKS[0];
+    function selectLevelMusic(idx){
+      const next = MUSIC_TRACKS[idx] || MUSIC_TRACKS[0];
+      if(backgroundMusic.dataset.track === next) return;
+      backgroundMusic.pause();
+      try{ backgroundMusic.currentTime = 0; }catch(_){ }
+      backgroundMusic.src = next;
+      backgroundMusic.dataset.track = next;
+      backgroundMusic.load();
+    }
+    backgroundMusic.addEventListener('error', function(){
+      if(backgroundMusic.dataset.track !== MUSIC_TRACKS[0]){
+        backgroundMusic.pause();
+        backgroundMusic.src = MUSIC_TRACKS[0];
+        backgroundMusic.dataset.track = MUSIC_TRACKS[0];
+        backgroundMusic.load();
+        if(typeof musicOn !== 'undefined' && musicOn){
+          const p = backgroundMusic.play();
+          if(p && typeof p.catch === 'function') p.catch(()=>{});
+        }
+      }
+    });`
+  );
+  source = source.replace(
+    "function startLevel(idx){\n  backgroundMusic.volume = 0.46;",
+    "function startLevel(idx){\n  selectLevelMusic(idx);\n  backgroundMusic.volume = 0.46;"
+  );
+
   source = source.replace(
     "function bindUi(){",
     "window.__vampireBabyStartLevel = startLevel;\nfunction bindUi(){"
