@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vampire Baby: Moonberry School Mayhem</title>
+  <link rel="stylesheet" href="styles.css?v=4">
+</head>
+<body>
+  <div class="game-shell">
+    <canvas id="game" width="1280" height="720"></canvas>
+
+    <div id="hud" class="hud hidden">
+      <div class="hud-left card">
+        <div id="levelName" class="eyebrow">LEVEL 1</div>
+        <div id="objective" class="headline">Collect treasures • calm pranksters • beat the boss</div>
+        <div id="hint" class="subline">Gold glow = treasure • red glow = enemy</div>
+      </div>
+      <div class="hud-stat card"><span id="treasureCount">0 / 0</span><small>TREASURES</small></div>
+      <div class="hud-stat card"><span id="enemyCount">0 / 0</span><small>ENEMIES</small></div>
+      <div class="hud-stat card"><span id="teamCount">6</span><small>TEAM LEFT</small></div>
+      <button id="musicBtn" class="music-btn card" aria-label="Toggle music">♫ ON</button>
+    </div>
+
+    <div id="bossBarWrap" class="boss-bar-wrap hidden">
+      <div class="boss-name" id="bossName">Boss</div>
+      <div class="boss-bar"><div id="bossBar"></div></div>
+    </div>
+
+    <div id="inventoryBar" class="inventory-bar hidden"></div>
+    <div id="rosterBar" class="roster-bar hidden"></div>
+
+    <div id="dialogue" class="dialogue hidden">
+      <img id="dialoguePortrait" alt="NPC portrait">
+      <div>
+        <div id="dialogueName" class="dialogue-name">Friend</div>
+        <p id="dialogueText"></p>
+        <small>Press <b>SPACE</b> to continue</small>
+      </div>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <div id="startScreen" class="overlay">
+      <div class="panel start-panel">
+        <div class="eyebrow">FIVE LEVELS • MORE TREASURES • MORE ENEMIES • REAL PROJECTILES</div>
+        <h1>Vampire Baby</h1>
+        <h2>Moonberry School Mayhem</h2>
+        <p><b>Vampire Baby starts first and leads the adventure.</b> Switch between all six friends as you explore Moonberry School, collect glowing Halloween treasures, calm cute pranksters, survive themed bosses, and keep the team alive.</p>
+        <div class="instruction-cast" aria-label="The six playable characters">
+          <div><img src="assets/characters/vampire.png" alt="Vampire Baby"><b>Vampire Baby</b><small>Moon Bolt Sense</small></div>
+          <div><img src="assets/characters/maya.png" alt="Maya"><b>Maya</b><small>Friendship Spark</small></div>
+          <div><img src="assets/characters/pumpkin.png" alt="Pumpkin Baby"><b>Pumpkin Baby</b><small>Candy Corn Burst</small></div>
+          <div><img src="assets/characters/skeleton.png" alt="Skeleton Baby"><b>Skeleton Baby</b><small>Bone Shield</small></div>
+          <div><img src="assets/characters/zombie.png" alt="Sleepy Zombie"><b>Sleepy Zombie</b><small>Dream Slow</small></div>
+          <div><img src="assets/characters/witch.png" alt="Witch Baby"><b>Witch Baby</b><small>Star Spell</small></div>
+        </div>
+        <div class="controls-grid">
+          <span><kbd>WASD</kbd> / <kbd>ARROWS</kbd> Move</span>
+          <span><kbd>F</kbd> Shoot</span>
+          <span><kbd>SPACE</kbd> Talk / Power</span>
+          <span><kbd>Q</kbd> / <kbd>E</kbd> Switch</span>
+          <span><kbd>1-6</kbd> Pick Character</span>
+        </div>
+        <div class="legend-row">
+          <span class="pill treasure-pill">Treasure</span>
+          <span class="pill enemy-pill">Enemy</span>
+          <span class="pill boss-pill">Boss</span>
+        </div>
+        <button id="playBtn" class="primary-btn">Start Adventure</button>
+      </div>
+    </div>
+
+    <div id="introScreen" class="overlay hidden">
+      <div class="panel">
+        <div id="introEyebrow" class="eyebrow">LEVEL 1</div>
+        <h2 id="introTitle">Welcome</h2>
+        <p id="introText"></p>
+        <button id="introBtn" class="primary-btn">Go!</button>
+      </div>
+    </div>
+
+    <div id="endScreen" class="overlay hidden">
+      <div class="panel end-panel">
+        <div id="endEyebrow" class="eyebrow">LEVEL COMPLETE</div>
+        <h2 id="endTitle">You did it!</h2>
+        <p id="endText"></p>
+        <div id="victoryChant" class="victory-chant hidden">VAMPIRE BABY! • VAMPIRE BABY! • EVERYBODY JUMP!</div>
+        <div id="victoryCast" class="victory-cast hidden" aria-label="The whole team celebrates">
+          <img src="assets/characters/vampire.png" alt="Vampire Baby">
+          <img src="assets/characters/maya.png" alt="Maya">
+          <img src="assets/characters/pumpkin.png" alt="Pumpkin Baby">
+          <img src="assets/characters/skeleton.png" alt="Skeleton Baby">
+          <img src="assets/characters/zombie.png" alt="Sleepy Zombie">
+          <img src="assets/characters/witch.png" alt="Witch Baby">
+        </div>
+        <div id="endStats" class="end-stats"></div>
+        <div class="button-row">
+          <button id="nextBtn" class="primary-btn">Next Level</button>
+          <button id="replayBtn" class="secondary-btn">Replay Level</button>
+          <button id="menuBtn" class="secondary-btn">Main Menu</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="loseScreen" class="overlay hidden">
+      <div class="panel end-panel">
+        <div class="eyebrow">TEAM WIPE</div>
+        <h2>Moonberry had a rough day.</h2>
+        <p>All six friends were knocked out. The pranksters threw too much chaos, the boss got away, and the treasure trail went cold. Try again with tighter dodging, faster switching, and smarter shots.</p>
+        <div class="button-row">
+          <button id="retryFromLoseBtn" class="primary-btn">Try Again</button>
+          <button id="menuFromLoseBtn" class="secondary-btn">Main Menu</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+window.addEventListener('error', function(e){
+  console.error('Vampire Baby runtime error:', e.error || e.message);
+});
+</script>
+<script src="game.js?v=4"></script>
+</body>
+</html>
