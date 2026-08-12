@@ -150,6 +150,62 @@ window.addEventListener('error', function(e){
   console.error('Vampire Baby runtime error:', e.error || e.message);
 });
 </script>
-<script src="game.js?v=5"></script>
+<script>
+(async function loadVampireBabyGame(){
+  const response = await fetch('game.js?v=4', {cache:'no-store'});
+  let source = await response.text();
+
+  source = source.replace(
+    "function bindUi(){",
+    "window.__vampireBabyStartLevel = startLevel;\nfunction bindUi(){"
+  );
+  source = source.replace(
+    "floatingTag(sx, sy-158, def.name, 'BOSS', '#ffd3b9', '#703311', 1.05)",
+    "floatingTag(sx, sy-242, def.name, 'BOSS', '#ffd3b9', '#703311', 1.0)"
+  );
+
+  (0, eval)(source);
+
+  const mobileControls = document.getElementById('mobileControls');
+  const overlays = ['startScreen','introScreen','endScreen','loseScreen'].map(id=>document.getElementById(id));
+  const dispatchKey = (type, key, code=key) => window.dispatchEvent(new KeyboardEvent(type,{key,code,bubbles:true,cancelable:true}));
+
+  function holdButton(id,key,code=key){
+    const el=document.getElementById(id); if(!el) return;
+    const down=e=>{e.preventDefault();dispatchKey('keydown',key,code);try{el.setPointerCapture(e.pointerId)}catch(_){}};
+    const up=e=>{e.preventDefault();dispatchKey('keyup',key,code)};
+    el.addEventListener('pointerdown',down,{passive:false});
+    el.addEventListener('pointerup',up,{passive:false});
+    el.addEventListener('pointercancel',up,{passive:false});
+    el.addEventListener('pointerleave',up,{passive:false});
+  }
+  holdButton('touchUp','ArrowUp','ArrowUp');
+  holdButton('touchDown','ArrowDown','ArrowDown');
+  holdButton('touchLeft','ArrowLeft','ArrowLeft');
+  holdButton('touchRight','ArrowRight','ArrowRight');
+
+  const shoot=document.getElementById('touchShoot');
+  const power=document.getElementById('touchPower');
+  const switchBtn=document.getElementById('touchSwitch');
+  if(shoot) shoot.addEventListener('pointerdown',e=>{e.preventDefault();dispatchKey('keydown','f','KeyF');dispatchKey('keyup','f','KeyF')},{passive:false});
+  if(power) power.addEventListener('pointerdown',e=>{e.preventDefault();dispatchKey('keydown',' ','Space');dispatchKey('keyup',' ','Space')},{passive:false});
+  if(switchBtn) switchBtn.addEventListener('pointerdown',e=>{e.preventDefault();dispatchKey('keydown','e','KeyE');dispatchKey('keyup','e','KeyE')},{passive:false});
+
+  document.querySelectorAll('[data-start-level]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const idx=Number(btn.dataset.startLevel);
+      if(window.__vampireBabyStartLevel) window.__vampireBabyStartLevel(idx);
+    });
+  });
+
+  function syncMobileControls(){
+    if(!mobileControls) return;
+    const blocked=overlays.some(el=>el && !el.classList.contains('hidden'));
+    mobileControls.classList.toggle('hidden',blocked);
+  }
+  overlays.forEach(el=>{if(el)new MutationObserver(syncMobileControls).observe(el,{attributes:true,attributeFilter:['class']})});
+  syncMobileControls();
+})();
+</script>
 </body>
 </html>
