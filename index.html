@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Vampire Baby: Moonberry School Mayhem</title>
-  <link rel="stylesheet" href="styles.css?v=4">
+  <link rel="stylesheet" href="styles.css?v=5">
 </head>
 <body>
   <div class="game-shell">
@@ -29,6 +29,26 @@
 
     <div id="inventoryBar" class="inventory-bar hidden"></div>
     <div id="rosterBar" class="roster-bar hidden"></div>
+
+    <div id="mobileControls" class="mobile-controls hidden" aria-label="Mobile game controls">
+      <div class="touch-dpad" aria-label="Move">
+        <button id="touchUp" class="touch-btn up" type="button" aria-label="Move up">▲</button>
+        <button id="touchLeft" class="touch-btn left" type="button" aria-label="Move left">◀</button>
+        <button id="touchDown" class="touch-btn down" type="button" aria-label="Move down">▼</button>
+        <button id="touchRight" class="touch-btn right" type="button" aria-label="Move right">▶</button>
+      </div>
+      <div class="touch-actions">
+        <button id="touchSwitch" class="touch-action switch" type="button">SWITCH</button>
+        <button id="touchPower" class="touch-action power" type="button">POWER / TALK</button>
+        <button id="touchShoot" class="touch-action shoot" type="button">SHOOT</button>
+      </div>
+    </div>
+
+    <div class="rotate-hint" aria-hidden="true">
+      <div>↻</div>
+      <b>Turn your phone sideways</b>
+      <span>Vampire Baby plays best in landscape.</span>
+    </div>
 
     <div id="dialogue" class="dialogue hidden">
       <img id="dialoguePortrait" alt="NPC portrait">
@@ -66,6 +86,16 @@
           <span class="pill treasure-pill">Treasure</span>
           <span class="pill enemy-pill">Enemy</span>
           <span class="pill boss-pill">Boss</span>
+        </div>
+        <div class="level-select">
+          <b>Jump straight to a level:</b>
+          <div class="level-select-buttons">
+            <button type="button" data-start-level="0">1 • Hallway</button>
+            <button type="button" data-start-level="1">2 • Art</button>
+            <button type="button" data-start-level="2">3 • Library</button>
+            <button type="button" data-start-level="3">4 • Cafeteria</button>
+            <button type="button" data-start-level="4">5 • Portal</button>
+          </div>
         </div>
         <button id="playBtn" class="primary-btn">Start Adventure</button>
       </div>
@@ -120,6 +150,6 @@ window.addEventListener('error', function(e){
   console.error('Vampire Baby runtime error:', e.error || e.message);
 });
 </script>
-<script src="game.js?v=4"></script>
+<script src="game.js?v=5"></script>
 </body>
 </html>
