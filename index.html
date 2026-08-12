@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>Vampire Baby: Moonberry School Mayhem</title>
   <link rel="stylesheet" href="styles.css?v=5">
 </head>
@@ -149,6 +149,32 @@
 window.addEventListener('error', function(e){
   console.error('Vampire Baby runtime error:', e.error || e.message);
 });
+
+// iPhone/iPad game-shell zoom guard: prevent accidental double-tap and pinch zoom
+// without changing the game controls themselves.
+(function preventAccidentalGameZoom(){
+  const shell = document.querySelector('.game-shell');
+  if(!shell) return;
+
+  shell.addEventListener('dblclick', function(e){
+    e.preventDefault();
+  }, {passive:false});
+
+  ['gesturestart','gesturechange','gestureend'].forEach(function(type){
+    shell.addEventListener(type, function(e){
+      e.preventDefault();
+    }, {passive:false});
+  });
+
+  let lastTouchEnd = 0;
+  shell.addEventListener('touchend', function(e){
+    const now = Date.now();
+    if(now - lastTouchEnd <= 350){
+      e.preventDefault();
+    }
+    lastTouchEnd = now;
+  }, {passive:false});
+})();
 </script>
 <script>
 (async function loadVampireBabyGame(){
