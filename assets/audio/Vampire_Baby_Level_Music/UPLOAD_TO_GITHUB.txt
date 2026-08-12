@@ -1,0 +1,10 @@
+Upload these four MP3 files into this existing GitHub folder:
+assets/audio/
+
+Keep the filenames exactly as they are:
+Paint_Splash_Boogie.mp3
+Moonberry_Library_Shuffle.mp3
+Monster_Lunch_Rock.mp3
+Vampire_Baby_Portal_Party.mp3
+
+Do not remove Midnight_Monster_Trot.mp3; that remains Level 1.
